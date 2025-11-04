@@ -66,9 +66,9 @@
 			\TxBoxWithCondition{4}{-3}{$\cancel$}{$a \land b$}
 		\end{scope}		
 		
-		\begin{scope}[name prefix = txtake-]
-			\node[rectangle] at (8,-1.8) (center) {};
-			\node[txLabel, above=1em of center] (nodeLabel) {$\refund$};
+	\begin{scope}[name prefix = txtake-]
+		\node[rectangle] at (8,-1.8) (center) {};
+		\node[txLabel, above=1em of center] (nodeLabel) {$tx_{\textsf{partial refund}}^{\textsf{btc}}$};
 			\node[rectangle, draw, minimum height=1.5em, minimum width=8.5em, below=1em of center] (firstBox) {};
 			\node[font=\scriptsize, text centered, below=1em of center] (firstOutput) {$\address{refund}{B}~(90\%)$};
 			\node[rectangle, draw, minimum height=1.5em, minimum width=8.5em, below=1.8em of firstOutput] (secondBox) {};
@@ -77,23 +77,30 @@
 			\node[rectangle, draw, rounded corners, minimum width=9.5em, fit=(nodeLabel)(firstBox)(secondBox)(spendingCondition)] (txBox) {};
 		\end{scope}
 		
-		\begin{scope}[name prefix = txpunish-]
-			\TxBoxWithoutCondition{8}{-4}{$\punish$}{$\address{punish}{A}$}
-		\end{scope}	
-								
-		\draw [line] (txfund-spendingCondition.north) |- (txredeem-txBox.west) 
-				node [labelBelow_small, font=\scriptsize]{$\A, \B$};
+	\begin{scope}[name prefix = txamnesty-]
+		\TxBoxWithoutCondition{11.5}{-2.7}{$tx_{\textsf{refund amnesty}}^{\textsf{btc}}$}{$\address{refund}{B}$}
+	\end{scope}
+	
+	\begin{scope}[name prefix = txpunish-]
+		\TxBoxWithoutCondition{8}{-4}{$\punish$}{$\address{punish}{A}$}
+	\end{scope}	
+							
+	\draw [line] (txfund-spendingCondition.north) |- (txredeem-txBox.west) 
+			node [labelBelow_small, font=\scriptsize]{$\A, \B$};
 		
 		\draw [line] (txfund-spendingCondition.south) |- (txcancel-txBox.west) 
 		        node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_1}$} 
 				node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
 		
-		\draw [line] (txcancel-spendingCondition.north) |- (txtake-txBox.west)
-				node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
-						
-		\draw [line] (txcancel-spendingCondition.south) |- (txpunish-txBox.west)
-				node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_2}$} 
-				node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
+	\draw [line] (txcancel-spendingCondition.north) |- (txtake-txBox.west)
+			node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
+	
+	\draw [line] (txtake-spendingCondition) -- (txamnesty-txBox.west)
+			node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
+					
+	\draw [line] (txcancel-spendingCondition.south) |- (txpunish-txBox.west)
+			node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_2}$} 
+			node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
 				
 		\draw [-,dotted] (-1,-5) -- (9,-5);
 
