@@ -1,0 +1,47 @@
+name: Compile LaTeX and Create Release
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Compile LaTeX document
+      uses: xu-cheng/latex-action@v3
+      with:
+        root_file: xmr_btc_atomic_swaps.tex
+        latexmk_use_xelatex: false
+        args: -pdf -interaction=nonstopmode -file-line-error
+
+    - name: Get short SHA
+      id: vars
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Get timestamp
+      id: timestamp
+      run: echo "timestamp=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: build-${{ steps.timestamp.outputs.timestamp }}-${{ steps.vars.outputs.sha_short }}
+        name: PDF Build ${{ steps.timestamp.outputs.timestamp }}
+        body: |
+          Automated PDF build from commit ${{ github.sha }}
+
+          Commit: ${{ github.event.head_commit.message }}
+          Author: ${{ github.event.head_commit.author.name }}
+        files: xmr_btc_atomic_swaps.pdf
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
