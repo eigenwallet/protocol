@@ -18,6 +18,9 @@
 
 \tikzstyle{txSpendingLabel} = 	[rectangle, text width=5em, font=\scriptsize, text centered, rounded corners]
 
+% Sticky note style
+\tikzstyle{stickynote} = [rectangle, font=\tiny, text centered, rounded corners=2pt, fill=yellow!80, draw=orange!50, inner sep=3pt, drop shadow={opacity=0.3, shadow xshift=1pt, shadow yshift=-1pt}]
+
 
 \newcommand\TxBox[5]{%
  	  	\node[rectangle] at ({#1},{#2}) (center) {};
@@ -29,7 +32,7 @@
    		\node[txSpendingLabel, below=1em of center] (spendingLabel) {#4};
    
 	 	%spending condition like a if condition  
-	   	\node[{#5}, right=2.45em of spendingLabel] (spendingCondition){};
+	   	\node[{#5}, right=1.8em of spendingLabel] (spendingCondition){};
    
 	   	\node[rectangle, draw, minimum height=1.5em, minimum width=6.3em, below=1em of center] (labelBox) {};
    
@@ -46,43 +49,70 @@
  \TxBox{#1}{#2}{#3}{#4}{IF}
 }
 
+% Generic sticky note command
+% Usage: \StickyNote[width]{targetNode}{position}{uniqueLabel}{text}
+% Example: \StickyNote{txBox}{below=3em}{note1}{Alice locks Bitcoin}
+% Example with width: \StickyNote[10em]{txBox}{below=3em}{note1}{Alice locks Bitcoin}
+% Position examples: below=3em, right=2em, above left=1em and 2em
+% Default width: 6em
+\newcommand\StickyNote[5][6em]{%
+	\node[stickynote, text width=#1, #3 of #2] (#4) {#5};
+	\draw[->, orange!70, thick] (#4) -- (#2);
+}
+
 
 \begin{figure}[htb]
 	\centering
 	\begin{tikzpicture}
 		[-latex,     
-    	on grid=true
+    	on grid=true,
+    	scale=0.8,
+    	every node/.style={scale=0.8}
     	]
 		
-		\begin{scope}[name prefix = txfund-]
-			\TxBoxWithCondition{0}{-1.5}{$\lock{btc}$}{$a \land b$}
-		\end{scope}
+	\begin{scope}[name prefix = txfund-]
+		\TxBoxWithCondition{0}{-1.5}{$\lock{btc}$}{$a \land b$}
+	\end{scope}
 		
 		\begin{scope}[name prefix = txredeem-]
 			\TxBoxWithoutCondition{4}{0}{$\redeem$}{$\address{redeem}{A}$}
 		\end{scope}
 			
-		\begin{scope}[name prefix = txcancel-]	
-			\TxBoxWithCondition{4}{-3}{$\cancel$}{$a \land b$}
-		\end{scope}		
-		
-	\begin{scope}[name prefix = txtake-]
-		\node[rectangle] at (8,-1.8) (center) {};
-		\node[txLabel, above=1em of center] (nodeLabel) {$tx_{\textsf{partial refund}}^{\textsf{btc}}$};
-			\node[rectangle, draw, minimum height=1.5em, minimum width=8.5em, below=1em of center] (firstBox) {};
-			\node[font=\scriptsize, text centered, below=1em of center] (firstOutput) {$\address{refund}{B}~(90\%)$};
-			\node[rectangle, draw, minimum height=1.5em, minimum width=8.5em, below=1.8em of firstOutput] (secondBox) {};
-			\node[font=\scriptsize, text centered, below=1.8em of firstOutput] (secondOutput) {$a \land b~(10\%)$};
-			\node[IF, right=3.2em of secondOutput] (spendingCondition) {};
-			\node[rectangle, draw, rounded corners, minimum width=9.5em, fit=(nodeLabel)(firstBox)(secondBox)(spendingCondition)] (txBox) {};
-		\end{scope}
+	\begin{scope}[name prefix = txcancel-]	
+		\TxBoxWithCondition{5}{-3}{$\cancel$}{$a \land b$}
+	\end{scope}		
+	
+\begin{scope}[name prefix = txrefundfull-]
+	\TxBoxWithoutCondition{8}{1}{$tx_{\textsf{full refund}}^{\textsf{btc}}$}{$\address{refund}{B}$}
+\end{scope}
+
+\StickyNote[10em]{txrefundfull-txBox}{right=7.5em}{noteFullRefund}{Alice can (choose) to sign her part of this transaction and transmit the PSBT to Bob off-chain during any point before $\mathsf{btc\_partial\_refund}$ is published. Bob can then sign his part of the transaction and publish it to the network to claim a full refund. In comparison to ``partial refund + amnesty'', this saves fees but requires interactivity.}
+
+
+\begin{scope}[name prefix = txtake-]
+	\node[rectangle] at (8.5,-1.5) (center) {};
+	\node[txLabel, above=1em of center] (nodeLabel) {$tx_{\textsf{partial refund}}^{\textsf{btc}}$};
+	\node[rectangle, draw, minimum height=1.5em, minimum width=8.5em, below=0.5em of center] (firstBox) {};
+	\node[font=\scriptsize, text centered, below=0.5em of center] (firstOutput) {$\address{refund}{B}~(90\%)$};
+	\node[rectangle, draw, minimum height=1.5em, minimum width=8.5em, below=1.5em of firstOutput] (secondBox) {};
+	\node[font=\scriptsize, text centered, below=1.5em of firstOutput] (secondOutput) {$a \land b~(10\%)$};
+	\node[IF, right=2.4em of secondOutput] (spendingCondition) {};
+	\node[rectangle, inner sep=0, minimum height=0, below=1em of secondBox] (bottomPadding) {};
+	\node[rectangle, draw, rounded corners, minimum width=9.5em, fit=(nodeLabel)(firstBox)(secondBox)(spendingCondition)(bottomPadding)] (txBox) {};
+\end{scope}
 		
 	\begin{scope}[name prefix = txamnesty-]
-		\TxBoxWithoutCondition{11.5}{-2.7}{$tx_{\textsf{refund amnesty}}^{\textsf{btc}}$}{$\address{refund}{B}$}
+		\node[rectangle] at (12,-3) (center) {};
+		\node[rectangle, text width=7em, text centered, rounded corners, minimum height=2em, minimum width=8em, above=1em of center] (nodeLabel) {$tx_{\textsf{refund amnesty}}^{\textsf{btc}}$};
+		\node[txSpendingLabel, below=1em of center] (spendingLabel) {$\address{refund}{B}$};
+		\node[rectangle, draw, minimum height=1.5em, minimum width=8em, below=1em of center] (labelBox) {};
+		\node[rectangle, draw, rounded corners, minimum height=5em, minimum width=8.5em, below=-0.em of center] (txBox) {};
 	\end{scope}
+
+	\StickyNote[10em]{txamnesty-txBox}{below=6em}{noteAmnesty}{If Bob has done a partial refund, Alice can (choose) to publish this transaction to allow him a full refund. Bob signs this part of the transaction during the negotiation phase. Alice can publish this non-interactively.}
 	
 	\begin{scope}[name prefix = txpunish-]
-		\TxBoxWithoutCondition{8}{-4}{$\punish$}{$\address{punish}{A}$}
+		\TxBoxWithoutCondition{8}{-4.5}{$\punish$}{$\address{punish}{A}$}
 	\end{scope}	
 							
 	\draw [line] (txfund-spendingCondition.north) |- (txredeem-txBox.west) 
@@ -92,29 +122,32 @@
 		        node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_1}$} 
 				node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
 		
+	\draw [line] (txcancel-spendingCondition.north) |- (txrefundfull-txBox.west)
+		node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
+
 	\draw [line] (txcancel-spendingCondition.north) |- (txtake-txBox.west)
-			node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
+		node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
 	
-	\draw [line] (txtake-spendingCondition) -- (txamnesty-txBox.west)
-			node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
+	\draw [line] (txtake-spendingCondition) |- (txamnesty-txBox.west)
+		node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
 					
 	\draw [line] (txcancel-spendingCondition.south) |- (txpunish-txBox.west)
 			node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_2}$} 
 			node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
 				
-		\draw [-,dotted] (-1,-5) -- (9,-5);
+		\draw [-,dotted] (-1,-6) -- (9,-6);
 
 		
 		\begin{scope}[name prefix = xmr-lock-]
-			\TxBoxWithCondition{0}{-6.5}{$\lock{xmr}$}{$\Spend{a}{} + \Spend{b}{}$}
+			\TxBoxWithCondition{0}{-7.5}{$\lock{xmr}$}{$\Spend{a}{} + \Spend{b}{}$}
 		\end{scope}
 		
 		\begin{scope}[name prefix = xmr-redeem-]
-			\TxBoxWithoutCondition{4}{-6.5}{$tx_{\textsf{redeem}}^{\textsf{xmr}}$}{$\textsf{Bob}$}
+			\TxBoxWithoutCondition{4}{-7.5}{$tx_{\textsf{redeem}}^{\textsf{xmr}}$}{$\textsf{Bob}$}
 		\end{scope}
 		
 		\begin{scope}[name prefix = xmr-cancel-]
-			\TxBoxWithoutCondition{4}{-8.5}{$tx_{\textsf{refund}}^{\textsf{xmr}}$}{$\textsf{Alice}$}
+			\TxBoxWithoutCondition{4}{-9.5}{$tx_{\textsf{refund}}^{\textsf{xmr}}$}{$\textsf{Alice}$}
 		\end{scope}
 						
 		\draw [dotted] (xmr-lock-spendingCondition.north) |- (xmr-redeem-txBox.west)
