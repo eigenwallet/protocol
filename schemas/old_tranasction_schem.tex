@@ -67,13 +67,19 @@
 		\end{scope}		
 		
 		\begin{scope}[name prefix = txtake-]
-			\TxBoxWithoutCondition{8}{-1.5}{$\refund$}{$\address{refund}{B}$}
-		\end{scope}		
+			\node[rectangle] at (8,-1.8) (center) {};
+			\node[txLabel, above=1em of center] (nodeLabel) {$\refund$};
+			\node[rectangle, draw, minimum height=1.5em, minimum width=8.5em, below=1em of center] (firstBox) {};
+			\node[font=\scriptsize, text centered, below=1em of center] (firstOutput) {$\address{refund}{B}~(90\%)$};
+			\node[rectangle, draw, minimum height=1.5em, minimum width=8.5em, below=1.8em of firstOutput] (secondBox) {};
+			\node[font=\scriptsize, text centered, below=1.8em of firstOutput] (secondOutput) {$a \land b~(10\%)$};
+			\node[IF, right=3.2em of secondOutput] (spendingCondition) {};
+			\node[rectangle, draw, rounded corners, minimum width=9.5em, fit=(nodeLabel)(firstBox)(secondBox)(spendingCondition)] (txBox) {};
+		\end{scope}
 		
 		\begin{scope}[name prefix = txpunish-]
 			\TxBoxWithoutCondition{8}{-4}{$\punish$}{$\address{punish}{A}$}
-		\end{scope}
-				
+		\end{scope}	
 								
 		\draw [line] (txfund-spendingCondition.north) |- (txredeem-txBox.west) 
 				node [labelBelow_small, font=\scriptsize]{$\A, \B$};
