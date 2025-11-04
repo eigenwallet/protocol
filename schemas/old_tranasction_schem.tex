@@ -1,0 +1,117 @@
+% Define block styles
+
+%arrow style
+\tikzstyle{line} = [draw, -latex']
+
+%lable style
+\tikzstyle{lables} = [midway, above, sloped]
+
+% our custom styles
+
+\tikzstyle{transaction} = 		[rectangle, text width=5em, text centered, rounded corners, minimum height=4.5em, minimum width=6em]
+
+\tikzstyle{txLabel} = 			[rectangle, text width=5em, text centered, rounded corners, minimum height=2em, minimum width=6em]
+
+%If condition
+\tikzstyle{IF} = 				[diamond, draw, fill=gray!20]
+
+
+\tikzstyle{txSpendingLabel} = 	[rectangle, text width=5em, font=\scriptsize, text centered, rounded corners]
+
+
+\newcommand\TxBox[5]{%
+ 	  	\node[rectangle] at ({#1},{#2}) (center) {};
+   
+   
+   		\node[txLabel,above=1em of center] (nodeLabel) {#3};
+
+		% spending label
+   		\node[txSpendingLabel, below=1em of center] (spendingLabel) {#4};
+   
+	 	%spending condition like a if condition  
+	   	\node[{#5}, right=2.45em of spendingLabel] (spendingCondition){};
+   
+	   	\node[rectangle, draw, minimum height=1.5em, minimum width=6.3em, below=1em of center] (labelBox) {};
+   
+   		% box around the whole tx
+	   	\node[rectangle, draw, rounded corners, minimum height=5em, minimum width=7em, below=-0.em of center] (txBox) {};
+}
+
+
+\newcommand\TxBoxWithoutCondition[4]{%
+ \TxBox{#1}{#2}{#3}{#4}{}
+}
+
+\newcommand\TxBoxWithCondition[4]{%
+ \TxBox{#1}{#2}{#3}{#4}{IF}
+}
+
+
+\begin{figure}[htb]
+	\centering
+	\begin{tikzpicture}
+		[-latex,     
+    	on grid=true
+    	]
+		
+		\begin{scope}[name prefix = txfund-]
+			\TxBoxWithCondition{0}{-1.5}{$\lock{btc}$}{$a \land b$}
+		\end{scope}
+		
+		\begin{scope}[name prefix = txredeem-]
+			\TxBoxWithoutCondition{4}{0}{$\redeem$}{$\address{redeem}{A}$}
+		\end{scope}
+			
+		\begin{scope}[name prefix = txcancel-]	
+			\TxBoxWithCondition{4}{-3}{$\cancel$}{$a \land b$}
+		\end{scope}		
+		
+		\begin{scope}[name prefix = txtake-]
+			\TxBoxWithoutCondition{8}{-1.5}{$\refund$}{$\address{refund}{B}$}
+		\end{scope}		
+		
+		\begin{scope}[name prefix = txpunish-]
+			\TxBoxWithoutCondition{8}{-4}{$\punish$}{$\address{punish}{A}$}
+		\end{scope}
+				
+								
+		\draw [line] (txfund-spendingCondition.north) |- (txredeem-txBox.west) 
+				node [labelBelow_small, font=\scriptsize]{$\A, \B$};
+		
+		\draw [line] (txfund-spendingCondition.south) |- (txcancel-txBox.west) 
+		        node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_1}$} 
+				node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
+		
+		\draw [line] (txcancel-spendingCondition.north) |- (txtake-txBox.west)
+				node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
+						
+		\draw [line] (txcancel-spendingCondition.south) |- (txpunish-txBox.west)
+				node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_2}$} 
+				node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
+				
+		\draw [-,dotted] (-1,-5) -- (9,-5);
+
+		
+		\begin{scope}[name prefix = xmr-lock-]
+			\TxBoxWithCondition{0}{-6.5}{$\lock{xmr}$}{$\Spend{a}{} + \Spend{b}{}$}
+		\end{scope}
+		
+		\begin{scope}[name prefix = xmr-redeem-]
+			\TxBoxWithoutCondition{4}{-6.5}{$tx_{\textsf{redeem}}^{\textsf{xmr}}$}{$\textsf{Bob}$}
+		\end{scope}
+		
+		\begin{scope}[name prefix = xmr-cancel-]
+			\TxBoxWithoutCondition{4}{-8.5}{$tx_{\textsf{refund}}^{\textsf{xmr}}$}{$\textsf{Alice}$}
+		\end{scope}
+						
+		\draw [dotted] (xmr-lock-spendingCondition.north) |- (xmr-redeem-txBox.west)
+				node [labelBelow_small,  font=\scriptsize]{$\s{A}, \s{B}$};
+												
+		\draw [dotted] (xmr-lock-spendingCondition.south) |- (xmr-cancel-txBox.west)
+				node [labelBelow_small,  font=\scriptsize]{$\s{A}, \s{B}$};
+		
+	\end{tikzpicture}
+\caption{Transaction schema for BTC to XMR atomic swaps. \textit{Top}: Transaction schema for Bitcoin. \textit{Bottom}: Transaction schema for Monero. 
+	\textit{Note: Monero view keys are omitted for clarity.}}
+\label{fig:old_btc_protocol}
+\end{figure}

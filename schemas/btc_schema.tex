@@ -1,0 +1,457 @@
+\newcommand{\txFundShortBtc}{\mathtt{BTC_l}}
+\newcommand{\txRedeemShortBtc}{\mathtt{BTC_r}}
+\newcommand{\txTakeShortBtc}{\mathtt{BTC_t}}
+\newcommand{\txEmergencyRefundShortBtc}{\mathtt{BTC_e}}
+\newcommand{\txRefundShortBtc}{\mathtt{BTC_c}}
+
+\newcommand{\xa}{\mathtt{x_A}}
+\newcommand{\xb}{\mathtt{x_B}}
+\newcommand{\aandb}{\mathtt{(\xa \land \xb)}}
+
+
+\begin{figure}[htb]
+	\centering
+	\begin{tikzpicture}[auto, node distance=2 cm]
+	
+	% Multisig between Alice and Bob
+
+	\node (TxFund) {$\txFundShortBtc$};
+	\node [node distance=0.2cm, below=of TxFund, font=\scriptsize](txFundCondition){$\aandb$};
+
+	\begin{scope}[on background layer]
+		
+		% if split		
+		\node[IF,node distance=0cm, right=of txFundCondition](SplitIF){};
+		% border around spending condition
+		\node[output,inner sep=1,outer sep=0, fit = (txFundCondition)(SplitIF)](Splitout){};
+		% border around the whole box
+		\node [TXsmall, fit=(TxFund)(Splitout)](FundingBox){};
+	
+	\end{scope}
+	
+	% tx refund
+	
+	\begin{scope}[on background layer]
+		\node[node distance=2.5cm,right=of FundingBox](TxRefundBox){};
+		\node[node distance=0cm,above=of TxRefundBox, align=center](TxRefund){$\txRefundShortBtc{}$};
+		% spending condition
+		\node[node distance =0cm, below=of TxRefundBox, align=left, font=\scriptsize](TxRefundCondition){$x_B$};
+		% Box around spending condition	
+		\node[node distance=0cm, right=of TxRefundCondition](TxRefundLocation){};
+		\node[output,inner sep=1,outer sep=0, fit=(TxRefundCondition)(TxRefundLocation)](TxRefundSplitout){};
+		% border around the whole box
+		\node[TXsmall, fit=(TxRefund)(TxRefundSplitout)](TxRefundSplitbox){};
+	\end{scope}
+	
+	% tx redeem
+	
+	\begin{scope}[on background layer]
+		\node[node distance=1.5cm,below=of TxRefundBox](TxRedeemBox){};
+		\node[node distance=0cm,above=of TxRedeemBox, align=center](TxRedeem){$\txRedeemShortBtc{}$};
+
+		% spending condition
+		\node[node distance =0cm, below=of TxRedeemBox, align=center, font=\scriptsize](TxRedeemCondition){$\aandb$};
+
+		% if split		
+		\node[IF,node distance=0cm, right=of TxRedeemCondition](TxRedeemSplitIF){};
+		% border around spending condition
+		\node[output,inner sep=1,outer sep=0, fit = (TxRedeemCondition)(TxRedeemSplitIF)](TxRedeemSplitout){};
+		% border around the whole box
+		\node [TXsmall, fit=(TxRedeem)(TxRedeemSplitout)](RedeemBox){};
+		
+	\end{scope}
+
+
+	% tx take
+	
+	\begin{scope}[on background layer]
+		\node[node distance=3.4cm,right=of TxRefundBox](TxTakeBox){};
+		\node[node distance=0cm,above=of TxTakeBox, align=center](TxTake){$\txTakeShortBtc{}$};
+
+		% spending condition
+		\node[node distance=0cm, below=of TxTakeBox, align=center, font=\scriptsize](TxTakeCondition){$x_A$};
+	
+		% Box around spending condition	
+		\node[node distance=0.1cm, right=of TxTakeCondition](TxTakeLocation){};		
+		\node[output,inner sep=1,outer sep=1, fit = (TxTakeCondition)(TxTakeLocation)](TxTakeSplitout){};
+		
+		% border around the whole box
+		\node[TXsmall, fit=(TxTake)(TxTakeSplitout)](TxTakeSplitbox){};
+	\end{scope}
+	
+	% tx emergency refund
+	
+	\begin{scope}[on background layer]
+		\node[node distance=1.86cm,below=of TxTakeBox](TxERBox){};
+		\node[node distance=0cm,above=of TxERBox, align=center](TxER){$\txEmergencyRefundShortBtc{}$};
+
+		% spending condition
+		\node[node distance=0cm, below=of TxERBox, align=center, font=\scriptsize](TxERCondition){$x_B$};
+	
+		% Box around spending condition	
+		\node[node distance=0cm, right=of TxERCondition](TxERLocation){};		
+		\node[output,inner sep=1,outer sep=1, fit = (TxERCondition)(TxERLocation)](TxERSplitout){};
+		
+		% border around the whole box
+		\node[TXsmall, fit=(TxER)(TxERSplitout)](TxERSplitbox){};
+	\end{scope}
+
+	
+	% edges
+	\path [line] (SplitIF) |- (TxRefundSplitbox) node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_1}$} node [labelBelow_small,  font=\scriptsize]{$\pk_A, \pk_B$};
+
+	\path [line] (SplitIF) |- node [labelBelow_small, font=\scriptsize] {$\pk_A, \pk_B$}(RedeemBox);
+	
+	%\path [line] (TxRedeemSplitIF) -- node [labelBelow_small, font=\scriptsize] {$$}(TxERSplitbox);	
+	\path [line] (TxRedeemSplitIF) |- (TxTakeSplitbox) node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_2}$} node [labelBelow_small,  font=\scriptsize]{$\pk_A, \pk_B$};
+	
+	\path [dotted,line] (TxRedeemSplitIF) -- node [labelBelow_small, font=\scriptsize] {$\xmrrpk{A},\pk_B$}(TxERSplitbox);
+	
+	% Description
+	
+	\node [node distance =3.35cm, below=of TxFund](createFund){
+		\begin{minipage}{2.5cm}
+		\begin{center}
+			\small{\textbf{1. Create} $[\txFundShortBtc{}]$}\\~\\
+				$\xrightarrow[ ]{pk_A} $\\
+				$\xleftarrow[ ]{pk_B, tid_B} $ 
+		\end{center}
+		\end{minipage}
+	};
+	
+	
+	\node [node distance=1.2cm, right=of createFund](createCancel){
+		\begin{minipage}{\minipagesize}
+		\begin{center}
+			\small{\textbf{2. Create} $[\txRefundShortBtc{}], [\txRedeemShortBtc{}]$}\\~\\
+				$\xrightarrow[ ]{\SA} $\\
+				$\xleftarrow[ ]{\SB} $ 
+		\end{center}
+		\end{minipage}
+	};
+
+	
+	\node [node distance=1cm, right=of createCancel](createTake){
+
+		\begin{minipage}{2.5cm}
+		\begin{center}
+			\small{\textbf{3. Create} $[\txTakeShortBtc{}]$}\\~\\
+				No communication.\\
+				$ $ 
+		\end{center}
+		\end{minipage}
+		
+	};
+	
+	\node [node distance =0.5cm, below=of createTake](signTake){
+		\begin{minipage}{2.5cm}
+		\begin{center}
+			\small{\textbf{4. Sign} $[\txTakeShortBtc{}]$}\\~\\
+				% $\xrightarrow[ ]{\sign_{sk_A} [\txTakeShortBtc{}]} $\\
+				$ $ \\ % only for formatting
+				$\xleftarrow[ ]{\sign(sk_B, [\txTakeShortBtc{}])} $ 
+		\end{center}
+		\end{minipage}
+	};
+	
+	\node [node distance =0.3cm, below=of createCancel](signRedeem){
+		\begin{minipage}{3.1cm}
+		\begin{center}
+			\small{\textbf{5. Sign} $[\txRefundShortBtc{}],[\txRedeemShortBtc{}]$}\\~\\
+				$\xrightarrow[ ]{\sig(\sk_A, [\txRefundShortBtc{}])} $\\
+				$\xleftarrow[ ]{\enc\sig(sk_B, \SA, [\txRedeemShortBtc{}])} $ 
+		\end{center}
+		\end{minipage}
+	};
+	
+	\node [node distance =0.55cm, below=of createFund](signFund){
+		\begin{minipage}{\minipagesize}
+		\begin{center}
+			\small{\textbf{6. Sign} $[\txFundShortBtc{}]$}\\~\\
+				Bob $\sig(\sk_B, [\txFundShortBtc])$ \\
+				$ $ 
+		\end{center}
+		\end{minipage}
+	};
+	
+	\node [node distance =0.55cm, below=of signFund](publish){
+		\begin{minipage}{3cm}
+		\begin{center}
+			\small{\textbf{7. Publish} $[\txFundShortBtc{}]$}\\~\\
+
+		\end{center}
+		\end{minipage}
+	};
+	
+	\node [node distance =0.3cm, right=of publish](space2ndcol){
+		\begin{minipage}{0.4cm}
+		\vspace{0.2cm}
+		\begin{center}
+			$\,$  \\~\\
+		\end{center}
+		\end{minipage}
+	};
+
+	\node [node distance =3.56cm, right=of space2ndcol](space3rdCol){
+		\begin{minipage}{3.cm}
+		\vspace{0.2cm}
+		\begin{center}
+			$\,$  \\~\\
+		\end{center}
+		\end{minipage}
+	};
+
+	\node[minimum height=8.5cm,
+	fit=(FundingBox) (prepareFund) (signFund)(publish), fill=gray!40, rounded corners=1mm, fill opacity=.2]{};
+	
+	\node[minimum height=8.5cm,
+	fit=(TxRefundSplitbox)(RedeemBox) (signRedeem)(space2ndcol), fill=gray!40, rounded corners=1mm, fill opacity=.2]{};
+
+	\node[minimum height= 8.5cm,minimum width=\textwidth/3,
+	fit=(TxTakeSplitbox)(TxERSplitbox)(signTake)
+	(space3rdCol)
+	, fill=gray!40, rounded corners=1mm, fill opacity=.2]{};
+
+%	\draw[dashed] (1.5,0.4) -- (1.5,-9);
+%	\draw[dashed] (6,0.4) -- (6,-9);
+	
+		
+	\end{tikzpicture}
+\caption{Bitcoin transaction schema.}
+\label{fig:btc_protocol}
+\end{figure}
+
+
+% \newcommand{\txFundShortBtc}{\mathtt{BTC_l}}
+% \newcommand{\txRedeemShortBtc}{\mathtt{BTC_r}}
+% \newcommand{\txTakeShortBtc}{\mathtt{BTC_t}}
+% \newcommand{\txEmergencyRefundShortBtc}{\mathtt{BTC_e}}
+% \newcommand{\txRefundShortBtc}{\mathtt{BTC_c}}
+
+% \newcommand{\xa}{\mathtt{x_A}}
+% \newcommand{\xb}{\mathtt{x_B}}
+% \newcommand{\aandb}{\mathtt{(\xa \land \xb)}}
+
+% \phil{TODO fix diagrams formatting}
+
+% \begin{figure}[htb]
+% 	\centering
+% 	\begin{tikzpicture}[auto, node distance=2 cm]
+	
+% 	% Multisig between Alice and Bob
+
+% 	\node (TxFund) {$\txFundShortBtc$};
+% 	\node [node distance=0.9cm, below of=TxFund, font=\scriptsize](txFundCondition){$\aandb$};
+
+% 	\begin{scope}[on background layer]
+		
+% 		% if split		
+% 		\node[IF,node distance=0.57cm, right of=txFundCondition](SplitIF){};
+% 		% border around spending condition
+% 		\node[output,inner sep=1,outer sep=0, fit = (txFundCondition)(SplitIF)](Splitout){};
+% 		% border around the whole box
+% 		\node [TXsmall, fit=(TxFund)(Splitout)](FundingBox){};
+	
+% 	\end{scope}
+	
+% 	% tx refund
+	
+% 	\begin{scope}[on background layer]
+% 		\node[node distance=3.5cm,right of=FundingBox](TxRefundBox){};
+% 		\node[node distance=0.45cm,above of=TxRefundBox, align=center](TxRefund){$\txRefundShortBtc{}$};
+% 		% spending condition
+% 		\node[node distance =0.14cm, below of=TxRefundBox, align=left, font=\scriptsize](TxRefundCondition){$x_B$};
+% 		% Box around spending condition	
+% 		\node[node distance=0.1cm, right of=TxRefundCondition](TxRefundLocation){};
+% 		\node[output,inner sep=1,outer sep=0, fit=(TxRefundCondition)(TxRefundLocation)](TxRefundSplitout){};
+% 		% border around the whole box
+% 		\node[TXsmall, fit=(TxRefund)(TxRefundSplitout)](TxRefundSplitbox){};
+% 	\end{scope}
+	
+% 	% tx redeem
+	
+% 	\begin{scope}[on background layer]
+% 		\node[node distance=2.2cm,below of=TxRefundBox](TxRedeemBox){};
+% 		\node[node distance=0.45cm,above of=TxRedeemBox, align=center](TxRedeem){$\txRedeemShortBtc{}$};
+
+% 		% spending condition
+% 		\node[node distance =0.44cm, below of=TxRedeemBox, align=center, font=\scriptsize](TxRedeemCondition)
+% 			{
+% 			$\aandb$
+% 			};
+
+% 		% if split		
+% 		\node[IF,node distance=0.77cm, right of=TxRedeemCondition](TxRedeemSplitIF){};
+% 		% border around spending condition
+% 		\node[output,inner sep=1,outer sep=0, fit = (TxRedeemCondition)(TxRedeemSplitIF)](TxRedeemSplitout){};
+% 		% border around the whole box
+% 		\node [TXsmall, fit=(TxRedeem)(TxRedeemSplitout)](RedeemBox){};
+		
+% 	\end{scope}
+
+
+% 	% tx take
+	
+% 	\begin{scope}[on background layer]
+% 		\node[node distance=4cm,right of=TxRefundBox](TxTakeBox){};
+% 		\node[node distance=0.45cm,above of=TxTakeBox, align=center](TxTake){$\txTakeShortBtc{}$};
+
+% 		% spending condition
+% 		\node[node distance =0.14cm, below of=TxTakeBox, align=center, font=\scriptsize](TxTakeCondition)
+% 			{
+% 			$x_A$
+% 			};
+	
+% 		% Box around spending condition	
+% 		\node[node distance=0.1cm, right of=TxTakeCondition](TxTakeLocation){};		
+% 		\node[output,inner sep=1,outer sep=1, fit = (TxTakeCondition)(TxTakeLocation)](TxTakeSplitout){};
+		
+% 		% border around the whole box
+% 		\node[TXsmall, fit=(TxTake)(TxTakeSplitout)](TxTakeSplitbox){};
+% 	\end{scope}
+	
+% 	% tx emergency refund
+% 	\begin{scope}[on background layer]
+% 		\node[node distance=2.8cm,below of=TxTakeBox](TxERBox){};
+% 		\node[node distance=0.456cm,above of=TxERBox, align=center](TxER){$\txEmergencyRefundShortBtc{}$};
+
+% 		% spending condition
+% 		\node[node distance =0.14cm, below of=TxERBox, align=center, font=\scriptsize](TxERCondition)
+% 			{
+% 			$x_B$
+% 			};
+	
+% 		% Box around spending condition	
+% 		\node[node distance=0.1cm, right of=TxERCondition](TxERLocation){};		
+% 		\node[output,inner sep=1,outer sep=1, fit = (TxERCondition)(TxERLocation)](TxERSplitout){};
+		
+% 		% border around the whole box
+% 		\node[TXsmall, fit=(TxER)(TxERSplitout)](TxERSplitbox){};
+% 	\end{scope}
+
+	
+% 	% edges
+% 	\path [line] (SplitIF) |- (TxRefundSplitbox) node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_1}$} node [labelBelow_small,  font=\scriptsize]{$\pk_A, \pk_B$};
+
+% 	\path [line] (SplitIF) |- node [labelBelow_small, font=\scriptsize] {$\pk_A, \pk_B$}(RedeemBox);
+	
+% 	%\path [line] (TxRedeemSplitIF) -- node [labelBelow_small, font=\scriptsize] {$$}(TxERSplitbox);	
+% 	\path [line] (TxRedeemSplitIF) |- (TxTakeSplitbox) node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_2}$} node [labelBelow_small,  font=\scriptsize]{$\pk_A, \pk_B$};
+	
+% 	\path [dotted,line] (TxRedeemSplitIF) -- node [labelBelow_small, font=\scriptsize] {$\xmrrpk{A},\pk_B$}(TxERSplitbox);
+	
+% 	% Description
+	
+% 	\node [node distance =5.25cm, below=of TxFund](createFund){
+% 		\begin{minipage}{\minipagesize}
+% 		\begin{center}
+% 			\small{\textbf{1. Create} $[\txFundShortBtc{}]$}\\~\\
+% 				$\xrightarrow[ ]{pk_A} $\\
+% 				$\xleftarrow[ ]{pk_B, tid_B} $ 
+% 		\end{center}
+% 		\end{minipage}
+% 	};
+	
+	
+% 	\node [node distance =1.6cm, below=of RedeemBox](createCancel){
+% 		\begin{minipage}{\minipagesize}
+% 		\begin{center}
+% 			\small{\textbf{2. Create} $[\txRefundShortBtc{},\txRedeemShortBtc{}]$}\\~\\
+% 				$\xrightarrow[ ]{\SA} $\\
+% 				$\xleftarrow[ ]{\SB} $ 
+% 		\end{center}
+% 		\end{minipage}
+% 	};
+
+	
+% 	\node [node distance =1.6cm, below=of TxERSplitbox](createTake){
+% 		\begin{minipage}{\minipagesize}
+% 		\begin{center}
+% 			\small{\textbf{3. Create} $[\txTakeShortBtc{}]$}\\~\\
+% 				No communication.
+% 		\end{center}
+% 		\end{minipage}
+% 	};
+	
+% 	\node [node distance =0.5cm, below=of createTake](signTake){
+% 		\begin{minipage}{\minipagesize}
+% 		\begin{center}
+% 			\small{\textbf{4. Sign} $[\txTakeShortBtc{}]$}\\~\\
+% 				% $\xrightarrow[ ]{\sign_{sk_A} [\txTakeShortBtc{}]} $\\
+% 				$ $ \\ % only for formatting
+% 				$\xleftarrow[ ]{\sign_{sk_B} [\txTakeShortBtc{}]} $ 
+% 		\end{center}
+% 		\end{minipage}
+% 	};
+	
+% 	\node [node distance =0.3cm, below=of createCancel](signRedeem){
+% 		\begin{minipage}{3cm}
+% 		\begin{center}
+% 			\small{\textbf{5. Pre-Sign} $[\txRefundShortBtc{},\txRedeemShortBtc{}]$}\\~\\
+% 				$\xrightarrow[ ]{\sign_{\sk_A}[\txRefundShortBtc{}]} $\\
+% 				$\xleftarrow[ ]{\sign_{\sk_B}[\txRefundShortBtc{}]} $ 
+% 				$\xleftarrow[ ]{\APreSign_{sk_B}([\txRedeemShortBtc{}],\SA)} $ 
+% 		\end{center}
+% 		\end{minipage}
+% 	};
+	
+% 	\node [node distance =0.55cm, below=of createFund](signFund){
+% 		\begin{minipage}{\minipagesize}
+% 		\begin{center}
+% 			\small{\textbf{6. Sign} $[\txFundShortBtc{}]$}\\~\\
+% 				$\xrightarrow[ ]{\SA} $\\
+% 				$\xleftarrow[ ]{\SB} $ 
+% 		\end{center}
+% 		\end{minipage}
+% 	};
+	
+% 	\node [node distance =0.55cm, below=of signFund](publish){
+% 		\begin{minipage}{3cm}
+% 		\begin{center}
+% 			\small{\textbf{7. Publish} $[\txFundShortBtc{}]$}\\~\\
+
+% 		\end{center}
+% 		\end{minipage}
+% 	};
+	
+% 	\node [node distance =0.3cm, right=of publish](space2ndcol){
+% 		\begin{minipage}{0.4cm}
+% 		\vspace{0.2cm}
+% 		\begin{center}
+% 			$\,$  \\~\\
+% 		\end{center}
+% 		\end{minipage}
+% 	};
+
+% 	\node [node distance =3.56cm, right=of space2ndcol](space3rdCol){
+% 		\begin{minipage}{3.cm}
+% 		\vspace{0.2cm}
+% 		\begin{center}
+% 			$\,$  \\~\\
+% 		\end{center}
+% 		\end{minipage}
+% 	};
+
+% 	\node[minimum height=8.5cm,
+% %	minimum width=\textwidth/3.1,
+% 	fit=(FundingBox) (prepareFund) (signFund)(publish), fill=gray!40, rounded corners=1mm, fill opacity=.2]{};
+	
+% 	\node[minimum height=8.5cm,
+% %	minimum width=\textwidth/3.1,
+% 	fit=(TxRefundSplitbox)(RedeemBox) (signRedeem)(space2ndcol), fill=gray!40, rounded corners=1mm, fill opacity=.2]{};
+
+% 	\node[minimum height= 8.5cm,minimum width=\textwidth/3,
+% 	fit=
+% 	(TxTakeSplitbox)
+% 	(TxERSplitbox)
+% 	(signTake)
+% 	(space3rdCol)
+% 	, fill=gray!40, rounded corners=1mm, fill opacity=.2]{};
+
+		
+	
+		
+% 	\end{tikzpicture}
+% \caption{Bitcoin transaction schema.}
+% \label{fig:btc_protocol}
+% \end{figure}

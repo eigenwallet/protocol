@@ -1,0 +1,285 @@
+%black line when out of page
+\overfullrule=10pt
+
+
+
+%GENERAL
+\newcommand{\define}{:=}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\getsr}{\gets_\$}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cmark}{\textcolor{OliveGreen}{\ding{51}}}
+\newcommand{\xmark}{\textcolor{BrickRed}{\ding{55}}}
+
+%ECDSA reduction 
+\newcommand{\SignECDSA}{\mathsf{Sign}^{\mathsf{ECDSA}}}
+\newcommand{\ROECDSA}{\mathcal{H}^{\mathsf{ECDSA}}}
+\newcommand{\Lexp}{L_{exp}}
+
+
+%GENERAL CRYPTO
+%\newcommand{\secPar}{\lambda}
+%\newcommand{\Sign}{\mathsf{Sign}}
+\newcommand{\Vrfy}{\mathsf{Vrfy}}
+\newcommand{\KeyGen}{\mathsf{Gen}}
+\newcommand{\EUF}{\mathsf{EUF\text{--}CMA}}
+\newcommand{\SUF}{\mathsf{SUF\text{--}CMA}}
+\newcommand{\SSigForge}{\mathsf{strongSigForge}}
+\newcommand{\SigForge}{\mathsf{SigForge}}
+
+\newcommand{\RO}{\mathcal{H}}
+\newcommand{\dlog}{\mathit{dlog}}
+\newcommand{\xCoordinate}{f}
+% \newcommand{\inst}{I}
+\newcommand{\wit}{w}
+
+%GROUP GEN
+\newcommand{\GenG}{\mathsf{GenG}}
+
+%RELATION
+\newcommand{\GenR}{\mathsf{GenR}}
+\newcommand{\VerR}{\mathsf{VerR}}
+
+%NIZK
+%\newcommand{\Setup}{\mathsf{Setup}}
+\newcommand{\Prove}{\mathsf{P}}
+\newcommand{\Verify}{\mathsf{V}}
+\newcommand{\CDH}{\mathit{dh}}
+\newcommand{\NIZK}{\mathsf{NIZK}}
+\newcommand{\extract}{\mathsf{K}}
+\newcommand{\simulate}{\mathsf{S}}
+\newcommand{\advers}{\mathsf{A}}
+
+
+%ADAPTOR SIGNATURES
+\newcommand{\aEUF}{\mathsf{aEUF\text{--}CMA}}
+\newcommand{\oracleSig}{\mathcal{O}_{\mathrm{S}}}
+\newcommand{\oraclePreSig}{\mathcal{O}_{\mathrm{pS}}}
+\newcommand{\Group}{\mathbb{G}}
+\newcommand{\SigScheme}{\Sigma}
+\newcommand{\ASigScheme}{\Xi}
+\newcommand{\ComScheme}{\Psi}
+\newcommand{\Commit}{\mathsf{Commit}}
+\newcommand{\com}{\mathit{com}}
+\newcommand{\decom}{\mathit{decom}}
+\newcommand{\Open}{\mathsf{Open}}
+\newcommand{\Gen}{\mathsf{Gen}}
+\newcommand{\RandExch}{\mathsf{R\textbf{--}Exchange}}
+\newcommand{\DetSign}{\mathsf{D\textbf{--}Sign}}
+\newcommand{\AKeyGen}{\mathsf{aGen}}
+\newcommand{\ASecretGen}{\mathsf{aSecGen}}
+\newcommand{\ACommit}{\mathsf{aCommit}}
+\newcommand{\APreSign}{\enc\sig}
+\newcommand{\ACompleteSign}{\mathsf{Adapt}}
+\newcommand{\AVrfy}{\mathsf{pVrfy}}
+\newcommand{\AExtract}{\mathsf{Ext}}
+\newcommand{\ASecVrf}{\mathsf{aSecVrfy}}
+\newcommand{\ASigForge}{\mathsf{aSigForge}}
+\newcommand{\ASigCor}{\mathsf{aPreSigCorrect}}
+\newcommand{\APreSigSound}{\mathsf{aPreSigSound}}
+\newcommand{\LR}{L_R}
+\newcommand{\AExtractability}{\mathsf{aWitExt}}
+\newcommand{\secPar}{n}
+\newcommand{\dpt}{DPT\xspace}
+\newcommand{\pgets}{\rightleftharpoons}
+\newcommand{\tra}{\mathit{trans}}
+\newcommand{\complSign}{\mathsf{Complete}}
+\newcommand{\preSign}{\mathsf{preSign}}
+\newcommand{\queryM}{\mathcal{Q}}
+\newcommand{\queryY}{\mathcal{Y}}
+
+\newcommand{\sVal}{y}
+\newcommand{\pVal}{Y}
+\newcommand{\chall}{\textsf{chall}}
+\newcommand{\preSigVal}{\tilde{\sigma}}
+\newcommand{\sigVal}{\sigma}
+\newcommand{\secretShare}[1]{x_{#1}}
+
+
+%TRANSACTIONS
+\newcommand{\tid}{\mathit{tid}}
+\newcommand{\tx}{\mathsf{tx}}
+%transaction attributes
+\newcommand{\txin}{\mathsf{Input}}
+\newcommand{\txid}{\mathsf{txid}}
+\newcommand{\utxoitem}{\mathtt{utxo}}
+\newcommand{\outindex}{\mathsf{index}}
+\newcommand{\txout}{\mathsf{Output}}
+\newcommand{\txval}{\mathsf{Value}}
+\newcommand{\txtime}{\mathsf{TimeLock}}
+\newcommand{\txdata}{\mathsf{Data}}
+\newcommand{\txwit}{\mathsf{Witness}}
+\newcommand{\txcondition}{\varphi}
+%concrete transactions
+\newcommand{\txRefund}[1]{\mathtt{TX^{#1}_{refund}}}
+\newcommand{\txFund}{\mathtt{TX_{f}}}
+\newcommand{\txFundNew}[1]{\mathtt{TX^{#1}_{f}}}
+\newcommand{\txCommit}[1]{\mathtt{TX^{#1}_{c}}}
+\newcommand{\txCommitOld}[1]{\mathtt{\overline{TX}^{#1}_{c}}}
+\newcommand{\txCommitNew}[1]{\mathtt{\overline{TX}^{#1}_{c}}}
+\newcommand{\txSplit}[1]{\mathtt{TX^{#1}_{s}}}
+\newcommand{\txSplitOld}[1]{\mathtt{\overline{TX}^{#1}_{s}}}
+\newcommand{\txPunish}[1]{\mathtt{TX^{#1}_{pun}}}
+\newcommand{\txFundShort}{\mathtt{TX_f}}
+\newcommand{\txCommitShort}{\mathtt{TX_c}}
+\newcommand{\txSplitShort}{\mathtt{TX_s}}
+
+
+%TIMEINGS
+\newcommand{\checkRelative}[1]{+#1}
+\newcommand{\checkAbsolute}[1]{>#1}
+\newcommand{\now}{\mathsf{now}}
+\newcommand{\timeSetup}{t_\mathsf{stp}}
+\newcommand{\timePublish}{\Delta}
+\newcommand{\timeLock}{t_{\mathsf{lock}}}
+
+%%IDEAL FUNCTIONALITIES
+\newcommand{\FLedgerChannels}{\mathcal{F}}
+
+
+\newcommand{\parTime}{T}
+\newcommand{\parTimeCreate}{T_0}
+\newcommand{\parTimeUpdate}{T_1}
+\newcommand{\parTimeUpdateComplete}{T_2}
+\newcommand{\parNumberCommitTx}{k}
+
+\newcommand{\chanSpace}{\Gamma}
+\newcommand{\oldStateList}[1]{\Theta^{#1}}
+
+%%PROTOCOLS
+\newcommand{\PLedgerChannels}{\Pi}
+
+
+%revocation secret/public
+\newcommand{\revokeS}{\mathit{r}}
+\newcommand{\revokeSold}{\bar{\mathit{r}}}
+\newcommand{\revokeP}{\mathit{R}}
+\newcommand{\revokePold}{\bar{\mathit{R}}}
+
+%publishing secer/public
+\newcommand{\publishS}{\mathit{y}}
+\newcommand{\publishSold}{\bar{\mathit{y}}}
+% \newcommand{\publishP}{\mathit{Y}} % do not use this :)
+%\newcommand{\publishR}{\mathit{R}} % do not use this anymore
+\newcommand{\publishPold}{\bar{\mathit{Y}}}
+\newcommand{\sCommitold}[1]{\bar{s}_\mathtt{Com}^{#1}}
+
+
+
+
+% TIKZ MACROS
+% node distance 
+\newcommand{\ycoordinate}{4}
+\newcommand{\xcoordinate}{2.5}
+
+\newcommand{\minipagesize}{2.2cm}
+\newcommand{\minipagesizeB}{3.3cm}
+\newcommand{\minipagesizeC}{2.34cm}
+
+% Define block styles
+
+%Multi-Sig
+% \tikzstyle{MS} = [rectangle, draw, double,  
+% text width=6.5em, text centered, rounded corners]
+\tikzstyle{MSsingle} = [rectangle, draw,  
+text width=6.5em, text centered, rounded corners]
+
+%General transaction
+\tikzstyle{TX} = [rectangle, draw, text width=5em, text centered, rounded corners, minimum height=4.5em, minimum width=6em]
+\tikzstyle{TXempty} = [rectangle, text width=5em, text centered, rounded corners, minimum height=4em, minimum width=6em]
+\tikzstyle{TXemptysmall} = [rectangle, text width=5em, text centered, rounded corners, minimum height=1.5em, minimum width=1.5em]
+%\tikzstyle{TXsmall} = [rectangle, draw, text width=5em, text centered, rounded corners]
+\tikzstyle{TXsmall} = [rectangle, draw, text centered, rounded corners, minimum height=2em]
+
+%Multiple outputs
+\tikzstyle{MO} = [circle, draw]
+
+%If condition
+\tikzstyle{IF} = [diamond, draw, fill=gray!20]
+%If condition
+\tikzstyle{output} = [rectangle, draw]
+
+%If condition
+\tikzstyle{party} = [rectangle, draw, fill=gray!20]
+
+%arrow style
+\tikzstyle{line} = [draw, -latex']
+
+%lable style
+\tikzstyle{lables} = [midway, above, sloped]
+
+%condition above the arrow
+\tikzstyle{labelAbove} = [above, pos=0.8]
+\tikzstyle{labelAbove_small} = [above, pos=0.75, font=\small]
+
+%condition below the arrow
+\tikzstyle{labelBelow} = [below, pos=0.8]
+\tikzstyle{labelBelow_small} = [below, pos=0.75, font=\small]
+
+\usepackage[misc,clock,geometry]{ifsym}
+
+%\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+%minimum height=2em]
+
+
+
+
+% \newsavebox{\fboxenvbox}
+% \newenvironment{fboxenv}
+% {\begin{lrbox}{\fboxenvbox}}
+% 	{\end{lrbox}\fbox{\usebox{\fboxenvbox}}}
+
+% % Protocol flows
+\newcommand*{\Rflow}[2][10em]{\ensuremath{\xrightarrow{\smash{\makebox[#1][c]{$#2$}}}}}
+\newcommand*{\Lflow}[2][10em]{\ensuremath{\xleftarrow{\smash{\makebox[#1][c]{$#2$}}}}}
+% \newcommand*{\LRflow}[3][10em]{\ensuremath{\xleftrightarrow[\smash{\makebox{$#2$}}]{\smash{\makebox[#1][c]{$#3$}}}}}
+% \newcommand*{\LRsbflow}[3][10em]{\ensuremath{\xleftrightharpoons[\smash{\makebox{$#2$}}]{\smash{\makebox[#1][c]{$#3$}}}}}
+% \newcommand*{\LRsflow}[3][4em]{\ensuremath{\xleftrightharpoons[\smash{\makebox{$#2$}}]{\smash{\makebox[#1][c]{$#3$}}}}}
+% \newcommand*{\Rsflow}[2][4em]{\ensuremath{\xrightarrow{\smash{\makebox[#1][c]{$#2$}}}}}
+% \newcommand*{\Rsmallflow}[2][2em]{\ensuremath{\xrightarrow{\smash{\makebox[#1][c]{$#2$}}}}}
+% \newcommand*{\Lsflow}[2][4em]{\ensuremath{\xleftarrow{\smash{\makebox[#1][c]{$#2$}}}}}
+
+% Old protocol section macros
+\newcommand{\alice}{\textbf{Alice}}
+\newcommand{\bob}{\textbf{Bob}}
+\newcommand{\wallet}[1]{\textsf{wallet}_#1}
+\newcommand{\bitcoin}{\textsf{bitcoin}}
+
+\newcommand{\getnewaddresses}[1]{\textsf{getnewaddress(#1)}}
+\newcommand{\getnewaddress}{\textsf{getnewaddress}}
+\newcommand{\fundrawtransaction}[1]{\textsf{fundrawtransaction}(#1)}
+
+\newcommand{\Pdleq}[3]{\pcalgostyle{P}_{\textsf{DLEQ}(#1, #2, #3)}}
+\newcommand{\Vdleq}[3]{\pcalgostyle{V}_{\textsf{DLEQ}(#1, #2, #3)}}
+
+\newcommand{\btc}{\textsf{amt}_{\textsf{btc}}}
+\newcommand{\xmr}{\textsf{amt}_{\textsf{xmr}}}
+\newcommand{\lock}[1]{tx_{\textsf{lock}}^{\textsf{#1}}}
+\newcommand{\txoutput}[2]{txout_{\textsf{#1}}^{\textsf{#2}}}
+\newcommand{\redeem}{tx_{\textsf{redeem}}^{\textsf{btc}}}
+\newcommand{\refund}{tx_{\textsf{refund}}^{\textsf{btc}}}
+\newcommand{\cancel}{tx_{\textsf{cancel}}^{\textsf{btc}}}
+\newcommand{\punish}{tx_{\textsf{punish}}^{\textsf{btc}}}
+\newcommand{\Spend}[2]{S_{#1}^{#2}}
+\newcommand{\View}[1]{V_{#1}}
+\newcommand{\view}[1]{v_{#1}}
+\newcommand{\s}[1]{s_{#1}}
+\newcommand{\signature}[2]{\sigma_{\textsf{#1}}^{#2}}
+\newcommand{\encsig}[2]{\hat{\sigma}_{\textsf{#1}}^{#2}}
+\newcommand{\expiry}[1]{t_{#1}}
+\newcommand{\address}[2]{\textsf{addr}_{\textsf{#1}}^{\textsf{#2}}}
+\newcommand{\A}{A}
+\newcommand{\B}{B}
+\newcommand{\dleq}[1]{\pi_{#1}}
+\newcommand{\buildtx}{\textsf{Tx}}
+\newcommand{\buildtxout}{\textsf{TxOut}}
+\newcommand{\ecdsa}{\textsf{ECDSA}}
+\newcommand{\pcreturnspace}{\phantom{\pcreturn (}}
+\newcommand{\fee}{\textsf{fee}}
+\newcommand{\rec}{\textsf{Rec}}
+\renewcommand{\verify}{\textsf{Vrfy}}

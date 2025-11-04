@@ -1,0 +1,20 @@
+\section{HTLC-based Atomic Swaps}
+Replacing centralized exchanges by decentralized ones is not new. 
+The idea of using HTLCs for atomically swapping two assets across two chains has been around for a while\cite{TierNolan2013}. Various companies have used this technology in their products and protocols for cross-chain trading\cite{comit,opendex}. Moreover, HTLCs are also used in the Lightning Network for multi-hop payments\cite{lightning2016}. 
+
+In a nutshell, an HTLC-based atomic swap protocol works like this: we assume two parties, Alice and Bob found each other somehow and agreed on the amounts and assets (e.g. bitcoin and ether) which the two parties want to exchange. Alice generates a random secret $s$ and uses a cryptographic hash function to generate hash $h$. She then creates an HTLC using $h$ and locks up the bitcoin. These coins can either be redeemed (spent) using the secret $s$ or are returned to her after time $t$ has passed. Bob does the same thing on the other chain: he locks up his ether in an HTLC using the same hash $h$.
+
+Since Alice knows the original secret $s$ that was used to produce the hash $h$, she can redeem the ether from Bob's HTLC. By doing so, she reveals the secret $s$ to Bob who can then take the bitcoin, completes the swap.
+
+% write about the drawbacks
+This apparently simple process has a few drawbacks: 
+\begin{itemize}
+    \item The requirements on the underlying blockchains are high. A certain script capability is required in order to support a hash function as well as timelocks. While many blockchains support these two features, some lack either one (e.g. Grin has no script support and hence no support for hash functions) or both (e.g. Monero). 
+    \item By definition, the same hash has to be used on both chains. This allows an independent third party to link those two transactions. Worse yet, since blockchain transactions are publicly available to everyone, this onlooker can now track where the parties move their newly acquired funds. 
+    \item The use of scripts (e.g. on Bitcoin, Litecoin, etc) or smart contracts (e.g. on Ethereum) results in an increased on-chain footprint and higher transaction fees in general.
+\end{itemize}
+
+With recent advancements in cryptography and the application of adaptor signatures to atomic swaps, it is now possible to overcome almost all of the aforementioned drawbacks. 
+For example, Grin-Bitcoin swaps can be realized despite Grin's lack of a scripting language. Using Schnorr adaptor signatures and timelocks, an atomic swap protocol can be executed\cite{comit_grin_btc}. 
+
+Recently, Gugger, J. (aka \textit{h4sh3d}) came up with a protocol which enables atomic swaps between Monero and Bitcoin\cite{gugger2020}. In the next section we discuss this protocol in detail; in \cref{new_protocol}, we present our current work, motivated by some of the limitations of \cite{gugger2020}.

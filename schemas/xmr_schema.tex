@@ -1,0 +1,134 @@
+\newcommand{\txFundShortXmr}{\mathtt{XMR_{l}}}
+\newcommand{\txRefundShortXmr}{\mathtt{XMR_{c}}}
+\newcommand{\txTakeShortXmr}{\mathtt{XMR_{r}}}
+\newcommand{\SA}{\mathtt{S_A}}
+\newcommand{\VA}{\mathtt{v_A}}
+\newcommand{\SB}{\mathtt{S_B}}
+\newcommand{\VB}{\mathtt{v_B}}
+
+% XMR coin secret/public key
+\newcommand{\xmrpk}[1]{S_{#1}}
+\newcommand{\xmrsk}[1]{s_{#1}}
+
+% XMR view secret/public key
+\newcommand{\xmrvpk}[1]{V_{#1}}
+\newcommand{\xmrvsk}[1]{v_{#1}}
+
+% XMR redeem secret/public key
+\newcommand{\xmrrpk}[1]{R_{#1}}
+\newcommand{\xmrrsk}[1]{r_{#1}}
+
+\newcommand{\sign}{\mathsf{sign}}
+
+
+
+\begin{figure}[htbp]
+	\centering
+	\begin{tikzpicture}[auto]
+	
+	\begin{scope}[on background layer]
+		\node (TxFund) {$\txFundShortXmr$};
+		\node [node distance=0.7cm, below of=TxFund, font=\scriptsize](txFundCondition){$x_A$};
+		
+		% if split		
+		\node[IF,node distance=0.77cm, right of=txFundCondition](SplitIF){};
+		% border around spending condition
+		\node[output,inner sep=1,outer sep=0, fit = (txFundCondition)(SplitIF)](Splitout){};
+		% border around the whole box
+		\node [TXsmall, fit=(TxFund)(Splitout)](FundingBox){};
+	
+	\end{scope}
+	
+	% tx take
+	
+	\begin{scope}[on background layer]
+		\node[node distance=3.4cm,right of=FundingBox](TxTakeBox){};
+		\node[node distance=0.35cm,above of=TxTakeBox, align=center](TxTake){$\txTakeShortXmr{}$};
+
+		% spending condition
+		\node[node distance =0.14cm, below of=TxTakeBox, align=left, font=\scriptsize](TxTakeCondition){$x_B$};
+	
+		% Box around spending condition	
+		\node[node distance=0.1cm, right of=TxTakeCondition](TxTakeLocation){};		
+		\node[output,inner sep=1,outer sep=1, fit = (TxTakeCondition)(TxTakeLocation)](TxTakeSplitout){};
+		
+		% border around the whole box
+		\node[TXsmall, fit=(TxTake)(TxTakeSplitout)](TxTakeSplitbox){};
+	\end{scope}
+
+	% tx refund
+	
+	\begin{scope}[on background layer]
+		\node[node distance=1.8cm,below of=TxTakeBox](TxRefundBox){};
+		\node[node distance=0.35cm,above of=TxRefundBox, align=center](TxRefund){$\txRefundShortXmr{}$};
+		% spending condition
+		\node[node distance =0.14cm, below of=TxRefundBox, align=left, font=\scriptsize](TxRefundCondition){$x_A$};
+		% Box around spending condition	
+		\node[node distance=0.1cm, right of=TxRefundCondition](TxRefundLocation){};
+		\node[output,inner sep=1,outer sep=0, fit=(TxRefundCondition)(TxRefundLocation)](TxRefundSplitout){};
+		% border around the whole box
+		\node[TXsmall, fit=(TxRefund)(TxRefundSplitout)](TxRefundSplitbox){};
+	\end{scope}
+	
+	% edges
+	% take and spend to Bob
+	\path [dotted,line] (SplitIF) |- node [labelBelow_small, font=\scriptsize] {$\SA, \SB$}(TxTakeSplitbox);
+	% refund and return to Alice
+	\path [line] (SplitIF) |- node [labelBelow_small, font=\scriptsize] {$\SA, \SB$}(TxRefundSplitbox);
+	
+
+	
+	% Description
+	
+	\node [node distance =4.1cm, below of=TxFund](prepareFund){
+		\begin{minipage}{3cm}
+		\begin{center}
+			\small{\textbf{1. Create} $[\txFundShortXmr{}]$}\\~\\
+				$\xrightarrow[ ]{\SA,\VA} $\\
+				$\xleftarrow[ ]{\SB,\VB} $ 
+		\end{center}
+		\end{minipage}
+	};
+	
+	\node [node distance =2cm, below of=TxRefundSplitbox](prepareCommmit){
+		\begin{minipage}{3cm}
+		\begin{center}
+			\small{\textbf{2. Create} $[\txRefundShortXmr{}]$}\\~\\
+			No communication. \\
+			%$\xrightarrow[ ]{\xmrrpk{A}} $ \\
+			$ $% just for formatting
+		\end{center}
+	\end{minipage}
+	};
+
+	\node [node distance =2.5cm, below of=prepareFund](signFund){
+		\begin{minipage}{3cm}
+		\begin{center}
+			\small{\textbf{4. Sign } $[\txFundShortXmr{}]$}\\~\\
+			Alice $\sig(\xmrsk{A}, [\txFundShortXmr{}]) $\\
+			$ $ \\% just for formatting
+			~\\
+			\small{\textbf{5. Publish }$[\txFundShortXmr{}]$}
+		\end{center}	
+		\end{minipage}
+	};
+	
+	\node [node distance =2.5cm, below of=prepareCommmit](signCommit){
+		\begin{minipage}{3cm}
+		\begin{center}
+				\small{\textbf{3. Sign } $[\txRefundShortXmr{}]$}\\~\\
+				$\xrightarrow[ ]{\xmrrpk{A}} $ \\
+				$\xleftarrow[ ]{\enc\sig(\xmrsk{B}, \xmrrpk{A}, [\txRefundShortXmr{}])} $ \\~\\~\\
+		\end{center}
+	\end{minipage}	
+	};
+	
+	\node[minimum height= 8.5cm,fit=(FundingBox) (prepareFund) (signFund), fill=gray!40, rounded corners=1mm, fill opacity=.2]{};
+	\node[minimum height= 8.5cm,fit=(TxTakeSplitbox) (prepareCommmit) (signCommit), fill=gray!40, rounded corners=1mm, fill opacity=.2]{};
+
+	
+	\end{tikzpicture}
+\caption{Monero transaction schema.}
+\label{fig:xmr_protocol}
+\end{figure}
+

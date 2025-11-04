@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: xmr_btc_atomic_swaps.aux
+The style file: splncs04.bst
+Database file #1: mybibliography.bib
+You've used 17 entries,
+            2850 wiz_defined-function locations,
+            667 strings with 6482 characters,
+and the built_in function-call counts, 5678 in all, are:
+= -- 431
+> -- 124
+< -- 0
++ -- 54
+- -- 36
+* -- 257
+:= -- 741
+add.period$ -- 16
+call.type$ -- 17
+change.case$ -- 81
+chr.to.int$ -- 0
+cite$ -- 17
+duplicate$ -- 521
+empty$ -- 664
+format.name$ -- 37
+if$ -- 1264
+int.to.chr$ -- 0
+int.to.str$ -- 17
+missing$ -- 98
+newline$ -- 57
+num.names$ -- 34
+pop$ -- 278
+preamble$ -- 1
+purify$ -- 52
+quote$ -- 0
+skip$ -- 124
+stack$ -- 0
+substring$ -- 230
+swap$ -- 225
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 68
+warning$ -- 0
+while$ -- 49
+width$ -- 19
+write$ -- 166
