@@ -56,7 +56,7 @@
 % Position examples: below=3em, right=2em, above left=1em and 2em
 % Default width: 6em
 \newcommand\StickyNote[5][6em]{%
-	\node[stickynote, text width=#1, #3 of #2] (#4) {#5};
+	\node[stickynote, text width=#1, #3 of #2, scale=0.7] (#4) {#5};
 	\draw[->, orange!70, thick] (#4) -- (#2);
 }
 
@@ -100,6 +100,8 @@
 	\node[rectangle, inner sep=0, minimum height=0, below=1em of secondBox] (bottomPadding) {};
 	\node[rectangle, draw, rounded corners, minimum width=9.5em, fit=(nodeLabel)(firstBox)(secondBox)(spendingCondition)(bottomPadding)] (txBox) {};
 \end{scope}
+
+\StickyNote[13em]{txtake-txBox}{above right=2em and 9em}{notePartialRefund}{Alice signs her part of this transaction during the negotiation phase and transmits it to Bob. Bob will signs his part of this transaction once tx\_cancel is published on chain and Alice has not transmitted tx\_btc\_full\_refund to him until then. Alice can extract S\_B from the transaction once she sees it}
 		
 	\begin{scope}[name prefix = txamnesty-]
 		\node[rectangle] at (12,-3) (center) {};
@@ -109,7 +111,7 @@
 		\node[rectangle, draw, rounded corners, minimum height=5em, minimum width=8.5em, below=-0.em of center] (txBox) {};
 	\end{scope}
 
-	\StickyNote[10em]{txamnesty-txBox}{below=6em}{noteAmnesty}{If Bob has done a partial refund, Alice can (choose) to publish this transaction to allow him a full refund. Bob signs this part of the transaction during the negotiation phase. Alice can publish this non-interactively.}
+	\StickyNote[10em]{txamnesty-txBox}{below left=5em and 3em}{noteAmnesty}{If Bob has done a partial refund, Alice can (choose) to publish this transaction to allow him a full refund. Bob signs this part of the transaction during the negotiation phase. Alice can publish this non-interactively.}
 	
 	\begin{scope}[name prefix = txpunish-]
 		\TxBoxWithoutCondition{8}{-4.5}{$\punish$}{$\address{punish}{A}$}
