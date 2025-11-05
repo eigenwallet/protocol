@@ -82,6 +82,12 @@
 		\TxBoxWithCondition{5}{-3}{$\cancel$}{$a \land b$}
 	\end{scope}		
 	
+\begin{scope}[name prefix = txearlyrefund-]
+	\TxBoxWithoutCondition{4}{3}{$tx_{\textsf{early refund}}^{\textsf{btc}}$}{$\address{refund}{B}$}
+\end{scope}
+
+\StickyNote[12em]{txearlyrefund-txBox}{above right=1em and 9em}{noteEarlyRefund}{Alice and Bob pre-sign this transaction during the negotiation phase but only Alice has the fully signed transaction. She can choose to publish this to allow Bob to do a full refund without having to wait for the timelock to expire. Alice will typically publish this transaction if she cannot lock her Monero.}
+
 \begin{scope}[name prefix = txrefundfull-]
 	\TxBoxWithoutCondition{8}{1}{$tx_{\textsf{full refund}}^{\textsf{btc}}$}{$\address{refund}{B}$}
 \end{scope}
@@ -117,12 +123,15 @@
 		\TxBoxWithoutCondition{8}{-4.5}{$\punish$}{$\address{punish}{A}$}
 	\end{scope}	
 							
+	\draw [line] (txfund-spendingCondition.north) |- (txearlyrefund-txBox.west) 
+		node [labelBelow_small, font=\scriptsize]{$\A, \B$};
+
 	\draw [line] (txfund-spendingCondition.north) |- (txredeem-txBox.west) 
-			node [labelBelow_small, font=\scriptsize]{$\A, \B$};
-		
-		\draw [line] (txfund-spendingCondition.south) |- (txcancel-txBox.west) 
-		        node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_1}$} 
-				node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
+		node [labelBelow_small, font=\scriptsize]{$\A, \B$};
+	
+	\draw [line] (txfund-spendingCondition.south) |- (txcancel-txBox.west) 
+	        node [labelAbove_small, font=\scriptsize] {$\checkRelative{t_1}$} 
+			node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
 		
 	\draw [line] (txcancel-spendingCondition.north) |- (txrefundfull-txBox.west)
 		node [labelBelow_small,  font=\scriptsize]{$\A, \B$};
